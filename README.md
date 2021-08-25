@@ -4,6 +4,7 @@ https://www.youtube.com/watch?v=FEBlFU1SB04&list=PLcgGtmZOsTwFMT0dt2qA7pL__QN3kv
 
 
 Dribble:
+https://dribbble.com/shots/11139824-Project-Management-App-Concept-3
 https://dribbble.com/shots/9150888-Project-Management-App-Concept-2/attachments/1197627?mode=media
 
 
