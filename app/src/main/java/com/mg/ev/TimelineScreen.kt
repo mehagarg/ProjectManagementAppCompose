@@ -6,9 +6,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawShadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout
+import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mg.ev.ui.typography
+import dev.chrisbanes.accompanist.coil.CoilImage
 
 enum class Status {
     New,
@@ -41,7 +47,9 @@ class Task(
 class User(
         val id: Int,
         val name: String
-)
+) {
+    fun imageUrlForSize(size: Int = 0) = "https://i.pravatar.cc/150?img=$id"
+}
 
 val zachary = User(
         id = 2,
@@ -97,12 +105,52 @@ val mockProject = Project(
                         id = 159,
                         title = "Technical Task",
                         timeCode = "23.19",
-                        tag = "#Design",
+                        tag = "#Backend",
                         assignee = listOf(mary),
                         status = Status.Done,
+                        commentCount = 4,
+                        attachmentCount = 2,
+                ),
+                Task(
+                        id = 163,
+                        title = "Contact Page",
+                        timeCode = "24.19",
+                        tag = "#Design",
+                        assignee = listOf(zachary),
+                        commentCount = 3,
+                        status = Status.InProgress,
+                        attachmentCount = 5,
+                ),
+                Task(
+                        id = 158,
+                        title = "Calculator Page",
+                        timeCode = "24.19",
+                        tag = "#Design",
+                        assignee = listOf(sarah, mary),
+                        status = Status.Done,
+                        commentCount = 8,
+                        attachmentCount = 2,
+                ),
+                Task(
+                        id = 163,
+                        title = "Technical Task",
+                        timeCode = "23.19",
+                        tag = "#Design",
+                        assignee = listOf(zachary),
+                        status = Status.New,
                         commentCount = 3,
                         attachmentCount = 5,
-                )
+                ),
+                Task(
+                        id = 159,
+                        title = "Technical Task",
+                        timeCode = "23.19",
+                        tag = "#Backend",
+                        assignee = listOf(mary),
+                        status = Status.Done,
+                        commentCount = 4,
+                        attachmentCount = 2,
+                ),
         )
 )
 
@@ -122,23 +170,29 @@ fun TimelineScreen(project: Project = mockProject) {
 @Composable
 fun AvatarList(users: List<User>) {
 
-    Row{
-        for(user in users){
-            Avatar(user)
+    Row {
+        users.forEachIndexed { index, user ->
+            Avatar(user, modifier = if (index == 0) Modifier else Modifier.layoutOffset(if (index == 0) 0.dp else (-10).dp))
         }
     }
+}
 
-
+private fun Modifier.layoutOffset(x: Dp = 0.dp, y: Dp = 0.dp) = this then Modifier.layout { measurable, constraints ->
+    val placeable = measurable.measure(constraints)
+    layout(placeable.width + x.toIntPx(), placeable.height + y.toIntPx()) {
+        placeable.placeRelative(x.toIntPx(), y.toIntPx())
+    }
 }
 
 @Composable
 fun Avatar(user: User, modifier: Modifier = Modifier) {
-    Box(
-            modifier = modifier
-                    .background(Color.White, CircleShape)
-                    .padding(2.dp)
-                    .background(Color(0xFFBB86FC), CircleShape)
-                    .size(48.dp)
+    CoilImage(
+        user.imageUrlForSize(with(DensityAmbient.current) { 40.dp.toIntPx() }),
+        modifier = modifier
+            .drawShadow(5.dp, CircleShape, clip = false)
+            .background(Color.White, CircleShape)
+            .padding(2.dp)
+            .clip(CircleShape)
+            .size(40.dp)
     )
-
 }
